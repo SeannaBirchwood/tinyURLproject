@@ -3,7 +3,24 @@
 
 var express = require("express");
 var app = express();
+
+//set the view engine to ejs
+
 app.set("view engine", "ejs");
+
+//use res.render to load up an ejs view file
+
+//index page
+
+app.get('/', function(req, res) {
+    res.render('pages/index');
+});
+
+// about page 
+app.get('/about', function(req, res) {
+    res.render('pages/about');
+});
+
 var PORT = process.env.PORT || 8080; // default port 8080
 
 var urlDatabase = {
@@ -27,4 +44,13 @@ app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-//How do I actually make this into a server?
+
+
+
+//eventual problem
+// <!DOCTYPE html>
+// <html lang="en">
+// <body>
+//     <!-- Write EJS code here to display shortened links -->
+// </body>
+// </html>
