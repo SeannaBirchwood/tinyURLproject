@@ -4,6 +4,7 @@
 
 var express = require("express");
 var app = express();
+var PORT = process.env.PORT || 8080; // default port 8080
 
 //set the view engine to ejs
 
@@ -11,7 +12,7 @@ app.set("view engine", "ejs");
 
 //this relates to the body-parser package we installed
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: true}));
 
 //use res.render to load up an ejs view file
 
@@ -26,7 +27,7 @@ app.get('/about', function(req, res) {
     res.render('pages/about');
 });
 
-var PORT = process.env.PORT || 8080; // default port 8080
+
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -79,20 +80,22 @@ app.post("/urls/create", (req, res) => {
 })
 
 //placeholder function for something in the next excercise
-function generateRandomString() {
-	console.log("I am here. But where is here?")
-}
-console.log(generateRandomString());
+// function generateRandomString() {
+// 	console.log("I am here. But where is here?")
+// }
+// console.log(generateRandomString());
 
 
 
 app.get("/u/:shortURL", (req, res) => {
-	let longURL = urlDatabase.keys[0];
-	console.log(longURL)
-	res.redirect(longURL); 
-})
+	let longURL = req.param.id('something that was about to break');
+	res.redirect(302, "/urls:id", longURL);
+});
 
-shortURL
+
+
+
+//shortURL
 
 
 //eventual problem
