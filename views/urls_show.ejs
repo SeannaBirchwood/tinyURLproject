@@ -1,1 +1,28 @@
 <!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>List of Collected Short URLs</title>
+	</head>
+<body>
+	<h1>Collected Short URLs</h1>
+	<p>
+		<a href="/urls/new">Shorten Your URL</a>
+		<p class="show"> Shortened URLs </p>
+  </p>
+  <hr />
+  <div class="URL-basket">
+  	<% for(let i = 0; i < urls.length; i++) { %>
+  <div class="URL">
+  	<p>
+  	<strong>Site Info:</strong> <%= urls[i].info %>
+  	<br />
+  	<strong>Site Type:</strong> <%= urls[i].type %>
+  	<br />
+  	<a href="/urls/<%= i %>">Details</a> 
+  	<a href="/urls/<%= i %>/edit">Edit</a>
+   </p>
+  </div>
+ <% } %>
+</div>
+</body>
+</html>
