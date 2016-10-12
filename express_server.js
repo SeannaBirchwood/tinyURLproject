@@ -88,8 +88,12 @@ app.post("/urls/create", (req, res) => {
 
 
 app.get("/u/:shortURL", (req, res) => {
-	let longURL = req.param.id('something that was about to break');
-	res.redirect(302, "/urls:id", longURL);
+  //pseudo: let longURL equal urlDatabase.key.obj if req.param.id equals urlDatabase.key
+	let longURL = urlDatabase["key"]["object"] {
+    if (req.param.id == urlDatabase.key);
+  } req.param.id; //if we want the input to redirect to longURL,
+	res.redirect(302, "/urls:id", longURL); //we shouldn't make the longURL redirect
+                                          //to the input...
 });
 
 
@@ -105,3 +109,21 @@ app.get("/u/:shortURL", (req, res) => {
 //     <!-- Write EJS code here to display shortened links -->
 // </body>
 // </html>
+
+// router.get('/:id', function(req, res) {
+//   var apple = appleDB.filter(function(apple){
+//     return (apple.id == req.params.id);
+//   })[0];
+
+//   if (apple) {
+//     res.json(apple);
+//   }
+//   else {
+//     // Since we couldn't find what we were looking for,
+//     // we should stick to HTTP conventions and reply with
+//     // status 404 (not found).
+//     res.status(404).json({
+//       error: `Apple id=${req.params.id} not found`
+//     });
+//   }
+// })
