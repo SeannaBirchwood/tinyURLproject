@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <% "Use Strict" %>
+<% let urlsIndex = 0 %>
 <html lang="en">
 	<head>
 		<title>List of Collected Short URLs</title>
@@ -7,17 +8,16 @@
 <body>
 	<h1>Collected Short URLs</h1>
 	<p>
-		<a href="/urls/new">Shorten Your URL</a>
-		<p class="show"> Shortened URLs </p>
+		<a href="/new">Shorten Your URL</a>
   </p>
   <hr />
   <div>
-  	<% for(let i = 0; i < urls.length; i++) { %>
+  	<% for(let i = 0; i < urlsIndex.length; i++) { %>
   <div>
   	<p>
-  	<strong>Site Info:</strong> <%= urls[i].key %>
+  	<strong>Site Info:</strong> <%= urlsIndex[i] %>
   	<br />
-  	<strong>Site Type:</strong> <%= urls[i].value %>
+  	<strong>Site Type:</strong> <%= urlsIndex[i] %>
   	<br />
   	<a href="/urls/<%= i %>">Details</a> 
   	<a href="/urls/<%= i %>/edit">Edit</a>
