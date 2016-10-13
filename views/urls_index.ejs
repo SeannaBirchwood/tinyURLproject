@@ -1,32 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>List of Collected Short URLs</title>
-	</head>
-<body>
-	<h1>Collected Short URLs</h1>
-	<p>
-		<a href="/urls/new">Shorten Your URL</a>
-		<table>
-			<tr></tr>
-			<tr></tr>
-			<tr></tr>
-		</table>
-  </p>
-  <hr />
-  <div class="URL-basket">
-  	<% for(let i = 0; i < urls.length; i++) { %>
-  <div class="URL">
-  	<p>
-  	<strong>Site Info:</strong> <%= urls[i].info %>
-  	<br />
-  	<strong>Site Type:</strong> <%= urls[i].type %>
-  	<br />
-  	<a href="/urls/<%= i %>">Details</a> 
-  	<a href="/urls/<%= i %>/edit">Edit</a>
-   </p>
-  </div>
- <% } %>
-</div>
-</body>
+  <head></head>
+  	<body>
+  		<h2>List of Collected URLs</h2>
+  		<hr />
+  		<div><p></p>
+  		</div>
+  			<li>Go <a href="/new">here</a> for short URLs!</li>
+  			<li>Check out our<a href="/urls:id">About </a> Page.</li>
+  			<p>B2xVn2 --> http://www.lighthouselabs.ca<form method="POST" action="/urls/b2xVn2/delete">Delete</form></p>
+  			<p>9sm5xk --> http://www.google.com<form method="POST" action="/urls/9sm5xK/delete">Delete</form></p>
+
+  </body>
 </html>

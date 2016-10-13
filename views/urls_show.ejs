@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<% "Use Strict" %>
 <html lang="en">
 	<head>
 		<title>List of Collected Short URLs</title>
@@ -10,13 +11,13 @@
 		<p class="show"> Shortened URLs </p>
   </p>
   <hr />
-  <div class="URL-basket">
+  <div>
   	<% for(let i = 0; i < urls.length; i++) { %>
-  <div class="URL">
+  <div>
   	<p>
-  	<strong>Site Info:</strong> <%= urls[i].info %>
+  	<strong>Site Info:</strong> <%= urls[i].key %>
   	<br />
-  	<strong>Site Type:</strong> <%= urls[i].type %>
+  	<strong>Site Type:</strong> <%= urls[i].value %>
   	<br />
   	<a href="/urls/<%= i %>">Details</a> 
   	<a href="/urls/<%= i %>/edit">Edit</a>
