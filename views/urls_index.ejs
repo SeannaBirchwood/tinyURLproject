@@ -6,11 +6,15 @@
   		<hr />
   		<div><p></p>
   		</div>
-  			<li>Go <a href="/new">here</a> for short URLs!</li>
-  			<li>Check out our<a href="/about"> About </a> Page.</li>
+  			<p>Go <a href="/new">here</a> for short URLs!</p>
   			<div>
-  			<p>B2xVn2 --> http://www.lighthouselabs.ca<form method="POST" action="/urls/b2xVn2/delete">Delete</form></p>
-  			<p>9sm5xk --> http://www.google.com<form method="POST" action="/urls/9sm5xK/delete">Delete</form></p>
+  			<% for(url in urls) { %>
+  				<li> <%=url%> - <a href="/urls/<%=url%>"><%=urls[url]%></a><form action="/urls/:id/delete" method="POST" style="height: 50px">
+            <a href="/urls/<%=url%>">Edit</a>
+            <button type="delete" style="width: 300px, height: 50px">Delete</button>
+            </form>
+            </li>
   			</div>
+  			<% } %>
   </body>
 </html>
