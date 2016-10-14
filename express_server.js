@@ -7,9 +7,11 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -36,7 +38,8 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/urls', (req, res) => {
-  let urlsIndex = {urls: urlDatabase};
+  let urlsIndex = {username: req.cookies["username"],
+                    urls: urlDatabase};
   res.render('urls_index', urlsIndex);
 });
 
@@ -54,6 +57,12 @@ app.get("/u/:shortURL", (req, res) => {
   let longURL = req.params.id
   res.redirect(longURL);
 });
+
+app.get("/login", (req, res) => {
+  let loginPage = 0;
+  res.render("urls_login", loginPage);
+  console.log("Cookies: ", req.cookies.loginPage);
+})
 
 /*******************************************************************************/
 
@@ -76,6 +85,11 @@ app.post('/update', (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/login", (req, res) => {
+  let loginPage = 0
+  res.redirect("/urls");
+});
+
 /******************************************************************************/
 
 /**********************************Functions***********************************/
@@ -89,19 +103,3 @@ function generateRandomString() {
   }
   return text
 }
-
-
-
-//req.body.longUrl
-
-// app.get("/u/:shortURL", (req, res) => {
-//                                              //pseudo: let longURL equal urlDatabase.key.obj
-//   for (let i = 0; i < urlDatabase.length; i++) {
-// 	let longURL = urlDatabase[i][0];          //indexOf(urlDatabase)
-//   console.log(longURL);
-//   }                                           //if req.param.id equals urlDatabase.key
-  //if (req.param.id == urlDatabase) {
-                                             //if we want the input to redirect to longURL,
-  //res.redirect(301, longURL);
-//});                                        //we shouldn't make the longURL redirect to the input...
-
