@@ -7,9 +7,11 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -36,24 +38,33 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/urls', (req, res) => {
-  let urlsIndex = {urls: urlDatabase};
+  res.cookie("username", "username", {maxAge: 86400000});
+  let urlsIndex = {username: req.cookies["username"],
+                    urls: urlDatabase};
   res.render('urls_index', urlsIndex);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {url: req.params.id};
+  let shortURL = {url: req.params.id,
+                  username: req.cookies["username"]};
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = 0
+  let newShortUrl = {username: req.cookies["username"]}
 	res.render("urls_new", newShortUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = req.params.id
+  let longURL = {url: req.params.id,
+                  username: req.cookies["username"]};
   res.redirect(longURL);
 });
+
+app.get("/login", (req, res) => {
+  let loginPage = {username: req.cookies["username"]};
+  res.render("urls_login", loginPage);
+})
 
 /*******************************************************************************/
 
@@ -76,6 +87,16 @@ app.post('/update', (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/login", (req, res) => {
+  let loginPage = {username: req.cookies["username"]};
+  res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  let loginPage = {username: req.cookies["username"]};
+  res.redirect("/login");
+});
+
 /******************************************************************************/
 
 /**********************************Functions***********************************/
@@ -89,19 +110,3 @@ function generateRandomString() {
   }
   return text
 }
-
-
-
-//req.body.longUrl
-
-// app.get("/u/:shortURL", (req, res) => {
-//                                              //pseudo: let longURL equal urlDatabase.key.obj
-//   for (let i = 0; i < urlDatabase.length; i++) {
-// 	let longURL = urlDatabase[i][0];          //indexOf(urlDatabase)
-//   console.log(longURL);
-//   }                                           //if req.param.id equals urlDatabase.key
-  //if (req.param.id == urlDatabase) {
-                                             //if we want the input to redirect to longURL,
-  //res.redirect(301, longURL);
-//});                                        //we shouldn't make the longURL redirect to the input...
-
