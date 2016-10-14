@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<% "Use Strict" %>
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
 
@@ -14,11 +14,16 @@
         <ul class="nav navbar-nav">
             <li><a href="/urls">Home</a></li>
         </ul>
-      <form action="/login" method="POST" style="margin:150px;">
+        <% if (username === true) { %>
+        <form action="/logout" method="POST" style="margin:150px;">
+      <button type="submit" style="width: 300px, height: 50px">Logout</button>
+    </form>
+        <% } else { %>
+        <form action="/login" method="POST" style="margin:150px;">
       <label for="login">Username: </label>
       <input id="login" type="text" name="login" placeholder="Enter your username" style="width: 300px, height: 50px">
       <input type="submit" value="Submit">
-    </form>
+        <% } %>
     </div>
     <br />
     <br />

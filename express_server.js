@@ -38,30 +38,32 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/urls', (req, res) => {
+  res.cookie("username", "username", {maxAge: 86400000});
   let urlsIndex = {username: req.cookies["username"],
                     urls: urlDatabase};
   res.render('urls_index', urlsIndex);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {url: req.params.id};
+  let shortURL = {url: req.params.id,
+                  username: req.cookies["username"]};
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = 0
+  let newShortUrl = {username: req.cookies["username"]}
 	res.render("urls_new", newShortUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = req.params.id
+  let longURL = {url: req.params.id,
+                  username: req.cookies["username"]};
   res.redirect(longURL);
 });
 
 app.get("/login", (req, res) => {
-  let loginPage = 0;
+  let loginPage = {username: req.cookies["username"]};
   res.render("urls_login", loginPage);
-  console.log("Cookies: ", req.cookies.loginPage);
 })
 
 /*******************************************************************************/
@@ -86,8 +88,13 @@ app.post('/update', (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  let loginPage = 0
+  let loginPage = {username: req.cookies["username"]};
   res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  let loginPage = {username: req.cookies["username"]};
+  res.redirect("/login");
 });
 
 /******************************************************************************/
