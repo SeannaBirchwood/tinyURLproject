@@ -121,19 +121,3 @@ function generateRandomString() {
   }
   return text
 }
-
-
-
-//req.body.longUrl
-
-// app.get("/u/:shortURL", (req, res) => {
-//                                              //pseudo: let longURL equal urlDatabase.key.obj
-//   for (let i = 0; i < urlDatabase.length; i++) {
-// 	let longURL = urlDatabase[i][0];          //indexOf(urlDatabase)
-//   console.log(longURL);
-//   }                                           //if req.param.id equals urlDatabase.key
-  //if (req.param.id == urlDatabase) {
-                                             //if we want the input to redirect to longURL,
-  //res.redirect(301, longURL);
-//});                                        //we shouldn't make the longURL redirect to the input...
-
