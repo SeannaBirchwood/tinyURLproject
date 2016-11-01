@@ -7,6 +7,7 @@
 
   </head>
   	<body>
+        <% include partials/_header %>
   		<h2>Congrats!</h2>
       <h4>Your new shortened URL was added to the bottom of the following list:</h4>
   		<hr />
@@ -15,7 +16,7 @@
   			<div>
   			<% for(var url in urls) { %>
         <li>
-        <a href="/urls/<%=url%>"><%=urls[url]%></a> -
+        <a href="<%=urls[url]%>"><%=urls[url]%></a> -
         <%=url%> <form method="POST" action="/urls/<%=url%>/delete">
             <button type="delete">Delete</button>
             </form>

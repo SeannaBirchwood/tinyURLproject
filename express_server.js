@@ -38,27 +38,41 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/', (req, res) => {
-  let urlsIndex = {urls: urlDatabase};
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render('urls_home', urlsIndex);
 });
 
 app.get('/urls', (req, res) => {
-  let urlsIndex = {urls: urlDatabase};
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render('urls_index', urlsIndex);
 })
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {shortURL: req.params.id};
+  let shortURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = 0
+  let newShortUrl = {
+    username: req.cookies["username"]
+  };
 	res.render("urls_new", newShortUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = req.params.id
+  let longURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.redirect(longURL);
 });
 
@@ -72,15 +86,27 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let templateVars = {shortURL : req.params.id};
+  let templateVars = {shortURL: req.params.id};
   delete urlDatabase[templateVars.shortURL];
   res.redirect("/urls");
 });
 
 app.post('/urls/:id/update', (req, res) => {
-  let longURL = req.params.body;
-  res.redirect("/urls");
+  if(urlDatabase[req.params.id]) {
+    urlDatabase[req.params.id] = req.body.longURL;
+  }
+  res.redirect('/urls')
 });
+
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect('/');
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/');
+})
 
 /******************************************************************************/
 
