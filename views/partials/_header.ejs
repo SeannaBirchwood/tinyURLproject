@@ -1,31 +1,56 @@
 <!DOCTYPE html>
 <html>
-<% "Use Strict" %>
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
 
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
-                Making Tiny URLs
-            </a>
-        </div>
+<head>
 
-        <ul class="nav navbar-nav">
-            <li><a href="/urls">Home</a></li>
-        </ul>
-        <% if (username === true) { %>
-        <form action="/logout" method="POST" style="margin:150px;">
-      <button type="submit" style="width: 300px, height: 50px">Logout</button>
-    </form>
-        <% } else { %>
-        <form action="/login" method="POST" style="margin:150px;">
-      <label for="login">Username: </label>
-      <input id="login" type="text" name="login" placeholder="Enter your username" style="width: 300px, height: 50px">
-      <input type="submit" value="Submit">
+    <title>Header Page</title>
+
+    <!--This page is built to include repetitive elements 
+    throughout the app-->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <span>
+                    <h1>Tiny App</h1>
+                </span>
+            </div>
+
+            <ul class="nav navbar-nav">
+                <li><a href="/urls">Home</a></li>
+                <li><a href="/index">Index</a></li>
+                <li><a href="/new">Create</a></li>
+                <li><a href="/show">Modify</a></li>
+            </ul>
+
+            <hr />
+        <% if(!user_id) { %>
+            <p>Login<form method= "POST" action="/login"><input id="username" name="username" placeholder="Enter username"></input><button type="submit">Submit</button></form></p>
         <% } %>
-    </div>
-    <br />
-    <br />
-</nav>
+
+        <% if(user_id) { %>
+        <%=user_id.email%>
+            <p>Logout<form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
+
+            <% } %>
+        <% if(!user_id) { %>
+            <form method="POST" action="/register">
+            <input type="email" name="email" placeholder="Enter your email">
+            </input>
+            <input type="password" name="password" placeholder="Enter a password">
+            </input>
+            <button type="submit">Submit</button>
+            </form>
+        <% } %>
+
+            <hr />
+
+        </div>
+    </nav>
+</body>
+
 </html>

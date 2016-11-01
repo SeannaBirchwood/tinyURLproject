@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<% "Use Strict" %>
+<html lang="en">
+  <head>
+    <title>Registration Page</title>
+
+    <!--This page is self explanatory. The endpoint
+        is /register
+        -->
+
+  </head>
+  	<body>
+    <% include partials/_header %>
+
+  		<h2>Register Now!</h2>
+      <h4>Join the smallest URL community in the Digital World</h4>
+
+        <hr />
+
+        <section>
+        <form method="POST" action="/register">
+        <input type="email" name="email" placeholder="Enter your email">
+        </input>
+        <input type="password" name="password" placeholder="Enter a password">
+        </input>
+        <button type="submit">Submit</button>
+        </form>
+        </section>
+
+  </body>
+</html>
