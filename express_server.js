@@ -37,34 +37,44 @@ app.listen(PORT, () => {
 
 /**********************************Get Requests**********************************/
 
-app.get('/urls', (req, res) => {
-  res.cookie("username", "username", {maxAge: 86400000});
-  let urlsIndex = {username: req.cookies["username"],
-                    urls: urlDatabase};
-  res.render('urls_index', urlsIndex);
+app.get('/', (req, res) => {
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render('urls_home', urlsIndex);
 });
 
+app.get('/urls', (req, res) => {
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render('urls_index', urlsIndex);
+})
+
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {url: req.params.id,
-                  username: req.cookies["username"]};
+  let shortURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = {username: req.cookies["username"]}
-	res.render("urls_new", newShortUrl);
+  let newShortUrl = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", newShortUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = {url: req.params.id,
-                  username: req.cookies["username"]};
+  let longURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.redirect(longURL);
 });
-
-app.get("/login", (req, res) => {
-  let loginPage = {username: req.cookies["username"]};
-  res.render("urls_login", loginPage);
-})
 
 /*******************************************************************************/
 
@@ -76,26 +86,27 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase.property;
+  let templateVars = {shortURL: req.params.id};
+  delete urlDatabase[templateVars.shortURL];
   res.redirect("/urls");
 });
 
-app.post('/update', (req, res) => {
-  let id = req.body.id;
-  let editedUrl = {url: req.params.id};
-  urlDatabase.update(id, editedUrl);
-  res.redirect("/urls");
+app.post('/urls/:id/update', (req, res) => {
+  if(urlDatabase[req.params.id]) {
+    urlDatabase[req.params.id] = req.body.longURL;
+  }
+  res.redirect('/urls')
 });
 
 app.post("/login", (req, res) => {
-  let loginPage = {username: req.cookies["username"]};
-  res.redirect("/urls");
+  res.cookie('username', req.body.username);
+  res.redirect('/');
 });
 
 app.post("/logout", (req, res) => {
-  let loginPage = {username: req.cookies["username"]};
-  res.redirect("/login");
-});
+  res.clearCookie('username');
+  res.redirect('/');
+})
 
 /******************************************************************************/
 
