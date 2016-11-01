@@ -7,9 +7,11 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookie = require("cookie-parser");
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookie());
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -35,13 +37,18 @@ app.listen(PORT, () => {
 
 /**********************************Get Requests**********************************/
 
+app.get('/', (req, res) => {
+  let urlsIndex = {urls: urlDatabase};
+  res.render('urls_home', urlsIndex);
+});
+
 app.get('/urls', (req, res) => {
   let urlsIndex = {urls: urlDatabase};
   res.render('urls_index', urlsIndex);
-});
+})
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {url: req.params.id};
+  let shortURL = {shortURL: req.params.id};
   res.render("urls_show", shortURL);
 });
 
@@ -65,14 +72,13 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase.property;
+  let templateVars = {shortURL : req.params.id};
+  delete urlDatabase[templateVars.shortURL];
   res.redirect("/urls");
 });
 
-app.post('/update', (req, res) => {
-  let id = req.body.id;
-  let editedUrl = {url: req.params.id};
-  urlDatabase.update(id, editedUrl);
+app.post('/urls/:id/update', (req, res) => {
+  let longURL = req.params.body;
   res.redirect("/urls");
 });
 

@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head></head>
+  <head>
+    <title> Index </title>
+    <!--This is an index page. It shows the user that their
+    new shortURL - longURL pair was added to the database. -->
+
+  </head>
   	<body>
-  		<h2>List of Collected URLs</h2>
+  		<h2>Congrats!</h2>
+      <h4>Your new shortened URL was added to the bottom of the following list:</h4>
   		<hr />
-  		<div><p></p>
-  		</div>
-  			<p>Go <a href="/new">here</a> for short URLs!</p>
+  		<div>
+
   			<div>
-  			<% for(url in urls) { %>
-  				<li> <%=url%> - <a href="/urls/<%=url%>"><%=urls[url]%></a><form action="/urls/:id/delete" method="POST" style="height: 50px">
-            <a href="/urls/<%=url%>">Edit</a>
-            <button type="delete" style="width: 300px, height: 50px">Delete</button>
+  			<% for(var url in urls) { %>
+        <li>
+        <a href="/urls/<%=url%>"><%=urls[url]%></a> -
+        <%=url%> <form method="POST" action="/urls/<%=url%>/delete">
+            <button type="delete">Delete</button>
             </form>
-            </li>
+            <button><a href="/urls/<%=url%>">Edit</a></button>
+          </li>
+
+            <% } %>
   			</div>
-  			<% } %>
+  			
+        <section>
+          <p>Go <a href="/new">here</a> to make your own short URL!</p>
+        </section>
+
   </body>
 </html>

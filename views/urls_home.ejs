@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title> Homepage </title>
+    <!--This is the home page.
+        The end point is / 
+        On this page people can see submitted URLs and
+        modify their own. -->
+
+  </head>
+  	<body>
+  		<h2>Welcome to Tiny App!</h2>
+      <h4>(We're the home of the shortest URLs on the Interweb).</h4>
+  		<hr />
+  		<div>
+      <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
+  		</div>
+  		
+  			<div>
+  			<% for(var url in urls) { %>
+        <li>
+        <a href="/urls/<%=url%>"><%=urls[url]%></a> -
+        <%=url%> <form action="/urls/:id/delete" method="POST" style="height: 50px">
+            <button><a href="/urls/<%=url%>">Edit</a></button>
+            <button type="delete" style="width: 300px, height: 50px">Delete</button>
+            </form> 
+          </li>
+
+            <% } %>
+  			</div>
+  			
+        <section>
+          <p>Go <a href="/new">here</a> to make your own short URL!</p>
+        </section>
+
+  </body>
+</html>
