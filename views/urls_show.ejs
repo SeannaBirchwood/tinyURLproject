@@ -3,31 +3,28 @@
 <html lang="en">
 	<head>
 
-  <!--This page is for editing inputed URLs. 
-  The endpoint should be /urls/:id 
-      but that is debatable. Investigate.-->
-
-		<title>Inputed URL</title>
+    <!--This "Show" page is where a user can modify a URL
+        that they have submitted. The endpoint is /urls/:id
+        -->
 
 	</head>
 <body>
-	<h1>Change Your URL</h1>
+    <% include partials/_header %>
+	<h3>Change Your URL</h3>
 	<p>
-		<a href="/new">Enter a Different URL</a>
+		Or <a href="/new">enter a different URL</a>
   </p>
   <hr />
   <div>
   <div>
-  	<p>
-    <p>Your short URL: <%=url%> </p>
-     <form action="/urls/<%=url%>/update" method="POST" style="margin:150px;">
-      <label for="longURL">Edit the Full URL:</label>
+    <p>Update the URL you entered: </p>
+     <form action="/urls/<%=shortURL%>/update" method="POST" style="margin:150px">
+      <label for="longURL">Edit this URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px, height: 50px">
-      <a href="/urls"><button type="submit">Update</button></a>
+      <button type="submit">Update</button>
     </form>
   	<br />
   	<br />
-   </p>
   </div>
 </div>
 </body>

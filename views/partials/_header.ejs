@@ -1,21 +1,46 @@
 <!DOCTYPE html>
 <html>
 
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
+<head>
 
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
-                Making Tiny URLs
-            </a>
+    <title>Header Page</title>
+
+    <!--This page is built to include repetitive elements 
+    throughout the app-->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <span>
+                    <h1>Tiny App</h1>
+                </span>
+            </div>
+
+            <ul class="nav navbar-nav">
+                <li><a href="/urls">Home</a></li>
+                <li><a href="/index">Index</a></li>
+                <li><a href="/new">Create</a></li>
+                <li><a href="/show">Modify</a></li>
+            </ul>
+
+            <hr />
+        <% if(!username) { %>
+            <p>Login<form method= "POST" action="/login"><input id="username" name="username" placeholder="Enter username"></input><button type="submit">Submit</button></form></p>
+        <% } %>
+
+        <% if(username) { %>
+            <p>Logout<form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
+
+            <% } %>
+
+            <hr />
+
         </div>
+    </nav>
+</body>
 
-        <ul class="nav navbar-nav">
-            <li><a href="/urls">Home</a></li>
-            <li><a href="/about">About</a></li>
-        </ul>
-      
-    </div>
-</nav>
 </html>

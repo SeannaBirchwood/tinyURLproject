@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
   	
-  	<!--This page is to create a new short URL.
-  			The endpoint is supposed to be /new.
-  				Is that RESTful enough? Investigate -->
+  	<title>Shorten New URL</title>
+
+  	<!--This is the page where the user can submit a URL
+  			to be shortened. The endpoint is /new -->
 
   </head>
   <body style="font-size:20px; padding:50px;">
@@ -12,7 +13,7 @@
     <form action="/urls" method="POST" style="margin:150px;">
       <label for="longURL">Enter a URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px, height: 50px">
-      <input type="submit" value="Submit">
+      <input type="submit" value="submit">
     </form>
   </body>
 </html>

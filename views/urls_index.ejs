@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    
-    <!--This is a page for displaying URLs in the database.
-        The end point is /urls -->
+
+    <title> Index </title>
+
+    <!--This is an index page. It shows the user that their
+    new shortURL - longURL pair was added to the database. -->
 
   </head>
-
   	<body>
-
-  		<h2>Welcome to Tiny App!</h2>
-      <h4>(We're the home of the shortest URLs on the Interweb).</h4>
-
+        <% include partials/_header %>
+  		<h2>Congrats!</h2>
+      <h4>Your new shortened URL was added to the bottom of the following list:</h4>
   		<hr />
-
   		<div>
-        <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space.</p>
-      </div>
 
   			<div>
   			<% for(var url in urls) { %>
-  				<li> <a href="/urls/<%=urls[url]%>"> <%=urls[url]%></a> - <%=url%>
-            <a href="/urls/<%=url%>"><button type="edit">Edit</button></a>
-            <form method="POST" action="/urls/<%=url%>/delete"><button type="delete">Delete</button>
+        <li>
+        <a href="<%=urls[url]%>"><%=urls[url]%></a> -
+        <%=url%> <form method="POST" action="/urls/<%=url%>/delete">
+            <button type="delete">Delete</button>
             </form>
-             <% } %>
-            </li>    
+            <button><a href="/urls/<%=url%>">Edit</a></button>
+          </li>
+
+            <% } %>
   			</div>
-
-        <hr />
-
+  			
         <section>
           <p>Go <a href="/new">here</a> to make your own short URL!</p>
         </section>

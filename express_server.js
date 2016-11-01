@@ -7,9 +7,11 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookie = require("cookie-parser");
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookie());
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -36,27 +38,41 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/', (req, res) => {
-  res.render('urls_home');
-})
-
-app.get('/urls', (req, res) => {
-  let urlsIndex = {urls: urlDatabase};
-  let shortURL = {url: req.params.id}
-  res.render('urls_index', urlsIndex);
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render('urls_home', urlsIndex);
 });
 
+app.get('/urls', (req, res) => {
+  let urlsIndex = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render('urls_index', urlsIndex);
+})
+
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {url: req.params.id};
+  let shortURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = 0
+  let newShortUrl = {
+    username: req.cookies["username"]
+  };
 	res.render("urls_new", newShortUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = req.params.id
+  let longURL = {
+    shortURL: req.params.id,
+    username: req.cookies["username"]
+  };
   res.redirect(longURL);
 });
 
@@ -75,15 +91,22 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-app.post('/urls/:id', (req, res) => {
-  let longURL = {longURL: req.params.id};
-  res.redirect("/urls", longURL);
+app.post('/urls/:id/update', (req, res) => {
+  if(urlDatabase[req.params.id]) {
+    urlDatabase[req.params.id] = req.body.longURL;
+  }
+  res.redirect('/urls')
 });
 
-app.post('/urls/:id/update', (req, res) => {
-  let shortURL = {shortURL: req.params.id};
-  res.redirect("/urls", shortURL);
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect('/');
 });
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/');
+})
 
 /******************************************************************************/
 
