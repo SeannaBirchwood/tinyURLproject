@@ -2,7 +2,13 @@
 <% "Use Strict" %>
 <html lang="en">
 	<head>
+
+  <!--This page is for editing inputed URLs. 
+  The endpoint should be /urls/:id 
+      but that is debatable. Investigate.-->
+
 		<title>Inputed URL</title>
+
 	</head>
 <body>
 	<h1>Change Your URL</h1>
@@ -13,11 +19,11 @@
   <div>
   <div>
   	<p>
-    <p>The URL you entered: <%=url%> </p>
-     <form action="/update" method="POST" style="margin:150px">
-      <label for="id">Edit this URL:</label>
-      <input id="id" type="text" name="id" placeholder="Enter text" style="width: 300px, height: 50px">
-      <button type="submit">Update</button>
+    <p>Your short URL: <%=url%> </p>
+     <form action="/urls/<%=url%>/update" method="POST" style="margin:150px;">
+      <label for="longURL">Edit the Full URL:</label>
+      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px, height: 50px">
+      <a href="/urls"><button type="submit">Update</button></a>
     </form>
   	<br />
   	<br />

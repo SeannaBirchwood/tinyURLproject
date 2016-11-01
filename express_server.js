@@ -35,8 +35,13 @@ app.listen(PORT, () => {
 
 /**********************************Get Requests**********************************/
 
+app.get('/', (req, res) => {
+  res.render('urls_home');
+})
+
 app.get('/urls', (req, res) => {
   let urlsIndex = {urls: urlDatabase};
+  let shortURL = {url: req.params.id}
   res.render('urls_index', urlsIndex);
 });
 
@@ -65,15 +70,19 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase.property;
+  let templateVars = {shortURL: req.params.id};
+  delete urlDatabase[templateVars.shortURL];
   res.redirect("/urls");
 });
 
-app.post('/update', (req, res) => {
-  let id = req.body.id;
-  let editedUrl = {url: req.params.id};
-  urlDatabase.update(id, editedUrl);
-  res.redirect("/urls");
+app.post('/urls/:id', (req, res) => {
+  let longURL = {longURL: req.params.id};
+  res.redirect("/urls", longURL);
+});
+
+app.post('/urls/:id/update', (req, res) => {
+  let shortURL = {shortURL: req.params.id};
+  res.redirect("/urls", shortURL);
 });
 
 /******************************************************************************/
