@@ -49,7 +49,7 @@ let globalUsers = {
 app.get('/', (req, res) => {
   let urlsIndex = {
     urls: urlDatabase,
-    username: req.cookies["user_id"]
+    username: req.cookies["username"]
   };
   res.render('urls_home', urlsIndex);
 });
@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   let urlsIndex = {
     urls: urlDatabase,
-    username: req.cookies["user_id"]
+    username: req.cookies["username"]
   };
   res.render('urls_index', urlsIndex);
 })
@@ -65,14 +65,14 @@ app.get('/urls', (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let shortURL = {
     shortURL: req.params.id,
-    username: req.cookies["user_id"]
+    username: req.cookies["username"]
   };
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
   let newShortUrl = {
-    username: req.cookies["user_id"]
+    username: req.cookies["username"]
   };
   res.render("urls_new", newShortUrl);
 });
@@ -80,7 +80,7 @@ app.get("/new", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   let longURL = {
     shortURL: req.params.id,
-    username: req.cookies["user_id"]
+    username: req.cookies["username"]
   };
   res.redirect(longURL);
 });
@@ -88,18 +88,14 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/register", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    username: req.cookies["user_id"],
+    username: req.cookies["username"],
   };
   res.render("urls_register", templateVars)
 });
 
-app.get("/login", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    username: req.cookies["user_id"],
-  };
-  res.render(urls_login);
-});
+// app.get("/login", (req, res) => {
+
+// });
 
 /*******************************************************************************/
 
@@ -124,36 +120,36 @@ app.post('/urls/:id/update', (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.username);
-  res.redirect('/');
+  console.log('post login')
+  Object.keys(globalUsers).forEach( (userID) => {
+    let userValue = globalUsers[userID];
+    if(req.body.username === userValue.email && req.body.password === userValue.password) {
+      res.cookie('user_id', userValue.id);
+      res.cookie('username', userValue.email);
+      res.redirect('/');
+    } else {
+      res.status(403).send(403, "You need to check yourself")
+    }
+
+  })
+  
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
+  res.clearCookie('username');
   res.redirect('/');
 });
 
 app.post("/register", (req, res) => {
-  let i = 0;
-  for( let user in globalUsers ){
-    if(globalUsers[user].email === req.body.email)
-      {i = 1}
-    console.log(globalUsers[user].email)
-  }
-    if(i === 0){
-      let userInfo = {
-        'id': randomID, 
-        'email': req.body.email, 
-        'password': req.body.password
-      };
-      res.redirect('/');
-    } else {
-      res.status(400);
-      req.flash('loginMessage', 'Email already registered!!')
-      res.redirect('/register');
-    }
+  let id = generateUserID();
+  let user = {'id': id};
+  user.email = req.body["email"];
+  user.password = req.body["password"];
+  globalUsers[id] = user;
+  console.log('in register',globalUsers)
+  res.redirect("/");
 });
-
 
 /******************************************************************************/
 
@@ -178,5 +174,3 @@ function generateUserID() {
   }
   return text
 }
-
-const randomID = generateUserID();

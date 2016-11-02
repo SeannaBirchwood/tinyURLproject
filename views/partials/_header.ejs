@@ -28,16 +28,24 @@
             </ul>
 
             <hr />
-        <% if(!user_id) { %>
-            <p>Login<form method= "POST" action="/login"><input id="username" name="username" placeholder="Enter username"></input><button type="submit">Submit</button></form></p>
+        <% if(!username) { %>
+            <p>Login</p>
+            <form method= "POST" action="/login">
+            <input id="username" name="username" placeholder="Enter username"></input>
+            <input id="password" name="password" type="password"
+            placeholder="Enter password"></input>
+            <button type="submit">Submit</button>
+            </form>
         <% } %>
 
-        <% if(user_id) { %>
-        <%=user_id.email%>
+        <% if(username) { %>
+        <%=username%>
             <p>Logout<form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
 
             <% } %>
-        <% if(!user_id) { %>
+
+        <% if(!username) { %>
+        <p>REGISTER</p>
             <form method="POST" action="/register">
             <input type="email" name="email" placeholder="Enter your email">
             </input>
