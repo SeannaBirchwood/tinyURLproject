@@ -10,6 +10,9 @@
 
     <body>
         <% include partials/_header %>
+
+      <% if(user_id) { %>
+
       <h2>Congrats!</h2>
       <h4>Your new shortened URL was added to the bottom of the following list:</h4>
       <hr />
@@ -31,6 +34,12 @@
         <section>
           <p>Go <a href="/new">here</a> to make your own short URL!</p>
         </section>
+
+        <% } else { %>
+    <p>
+    Register or Login <a href="/register">Here</a>
+    </p>
+    <% } %>
 
   </body>
   

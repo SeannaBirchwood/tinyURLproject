@@ -4,6 +4,8 @@
 
     <title> Homepage </title>
     
+    <% "Use Strict" %>
+
     <!--This is the home page.
         The end point is / 
         On this page people can see submitted URLs and
@@ -20,14 +22,17 @@
       <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
       </div>
       
-        <div>
-        <% for(var url in urls) { %>
+        <div> 
+        <% for(var url in userURLs) { %>
         <li>
-        <a href="/urls/<%=url%>"><%=urls[url]%></a> -
+        <a href="/urls/<%=url%>"><%=userURLs[url]%></a> -
         <%=url%> <form action="/urls/:id/delete" method="POST" style="height: 50px">
+
+        <%if(user_id) { %>
             <button><a href="/urls/<%=url%>">Edit</a></button>
             <button type="delete" style="width: 300px, height: 50px">Delete</button>
             </form> 
+            <% } %> 
           </li>
 
             <% } %>

@@ -28,7 +28,7 @@
             </ul>
 
             <hr />
-        <% if(!username) { %>
+        <% if(!user_id) { %>
             <p>Login</p>
             <form method= "POST" action="/login">
             <input id="username" name="username" placeholder="Enter username"></input>
@@ -38,13 +38,13 @@
             </form>
         <% } %>
 
-        <% if(username) { %>
-        <%=username%>
-            <p>Logout<form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
+        <% if(user_id) { %>
+        <%=user_id%>
+            <p><form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
 
             <% } %>
 
-        <% if(!username) { %>
+        <% if(!user_id) { %>
         <p>REGISTER</p>
             <form method="POST" action="/register">
             <input type="email" name="email" placeholder="Enter your email">
