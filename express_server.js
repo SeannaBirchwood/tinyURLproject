@@ -8,14 +8,16 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const password = globalUsers.user_id['password'];
-const hashed_password = bcrypt.hashSync(password, 10);
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
+
 app.set("view engine", "ejs");
 
 //this is just to make sure that the port is actually "listening".
@@ -51,6 +53,9 @@ let globalUsers = {
     password: "dishwasher-funk"}
 }
 
+// const password = globalUsers.user_id['password'];
+// const hashed_password = bcrypt.hashSync(password, 10);
+
 /********************************************************************************/
 
 /*********************************Notes******************************************/
@@ -66,7 +71,7 @@ let globalUsers = {
 
 app.get('/', (req, res) => {
   let userURLs = urlDatabase;
-  let userID = req.cookies['user_id'];
+  let userID = req.session['user_id'];
   let templateVars = {userURLs: userURLs,
                       user_id: userID}
   res.render('urls_home', templateVars);
@@ -74,8 +79,8 @@ app.get('/', (req, res) => {
 
 
 app.get('/urls', (req, res) => {
-  let userURLs = urlDatabase[req.cookies["user_id"]]
-  let userID = globalUsers[req.cookies["user_id"]];
+  let userURLs = urlDatabase[req.session["user_id"]]
+  let userID = globalUsers[req.session["user_id"]];
   let templateVars = {userURLs:userURLs,user_id:userID}
   res.render('urls_index', templateVars);
 })
@@ -83,7 +88,7 @@ app.get('/urls', (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let shortURL = {
     shortURL: req.params.id,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   res.render("urls_show", shortURL);
 });
@@ -91,7 +96,7 @@ app.get("/urls/:id", (req, res) => {
 app.get("/new", (req, res) => {
   let newUrl = {
     urlDatabase: uid,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   res.render("urls_new", newUrl);
 });
@@ -99,7 +104,7 @@ app.get("/new", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   let longURL = {
     shortURL: req.params.id,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   res.redirect(longURL);
 });
@@ -107,7 +112,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/register", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   console.log(templateVars, "Show me user object")
   res.render("urls_register", templateVars)
@@ -116,7 +121,7 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   res.render("urls_login", templateVars);
  });
@@ -127,7 +132,7 @@ app.get("/login", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let url = {}
-  let userid = req.cookies['user_id']
+  let userid = req.session['user_id']
   url.shortURL = generateRandomString();
   url.longURL = req.body['longURL'];
   if (!urlDatabase[userid]){ //value
@@ -142,7 +147,7 @@ app.post("/urls", (req, res) => {
 app.post("/register", (req, res) => {
   let user = {'id': uid};
   user.email = req.body["email"];
-  user.password = req.body["password"];
+  user.password = bcrypt.hashSync(req.body["password"], 10);
   globalUsers[uid] = user;
   res.redirect("/");
 });
@@ -150,7 +155,7 @@ app.post("/register", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"]
   };
   delete urlDatabase[templateVars.shortURL];
   res.redirect("/");
@@ -166,21 +171,22 @@ app.post('/urls/:id/update', (req, res) => {
 app.post("/login", (req, res) => {
   //Object.keys creates an array of all the values so we can
   //forEach, which we pass a new name for the array (userID).
+ 
   Object.keys(globalUsers).forEach( (userID) => {
     let userValue = globalUsers[userID];
-    if(req.body.username === userValue.email && req.body.password === userValue.password) {
-      res.cookie('user_id', userValue.id);
+    if(req.body.username === userValue.email && bcrypt.compareSync(req.body.password, userValue.password)) {
+      req.session.user_id = userValue.id;
       res.redirect('/');
     } else {
       res.status(403).send("You need to check yourself")
     }
 
-  })
+  });
   
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect('/');
 });
 
