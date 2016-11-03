@@ -3,6 +3,8 @@
   <head>
 
     <title> Homepage </title>
+    
+    <% "Use Strict" %>
 
     <!--This is the home page.
         The end point is / 
@@ -10,31 +12,45 @@
         modify their own. -->
 
   </head>
-  	<body>
-        <% include partials/_header %>
-  		<h2>Welcome to Tiny App!</h2>
-      <h4>(We're the home of the shortest URLs on the Interweb).</h4>
-  		<hr />
-  		<div>
-      <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
-  		</div>
-  		
-  			<div>
-  			<% for(var url in urls) { %>
-        <li>
-        <a href="/urls/<%=url%>"><%=urls[url]%></a> -
-        <%=url%> <form action="/urls/:id/delete" method="POST" style="height: 50px">
-            <button><a href="/urls/<%=url%>">Edit</a></button>
-            <button type="delete" style="width: 300px, height: 50px">Delete</button>
-            </form> 
+
+  <body>
+    <% include partials/_header %>
+    <h2>Welcome to Tiny App!</h2>
+    <h4>(We're the home of the shortest URLs on the Interweb).</h4>
+    <hr />
+    <div>
+    <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
+    </div>
+    
+    <div> 
+      <% Object.keys(userURLs).forEach(function (elem) { %>
+
+        <% userURLs[elem].forEach(function (url) { %>
+
+          <% if(user_id) { %>
+        
+          <li>
+            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            - <%=url['longURL'];%> 
+            
+              <form action="/urls/<%=url['shortURL']%>/delete" method="POST">
+                <button type="delete">Delete</button>
+              </form> 
+              <button><a href="/urls/<%=url['shortURL']%>">Edit</a></button>
+              </li>
+          <% } else { %>
+          <li>
+            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            - <%=url['longURL'];%> 
           </li>
+        <% } %>
+      <% }); %> 
 
-            <% } %>
-  			</div>
-  			
-        <section>
-          <p>Go <a href="/new">here</a> to make your own short URL!</p>
-        </section>
-
+      <% }); %>
+    </div>
+      
+    <section>
+      <p>Go <a href="/new">here</a> to make your own short URL!</p>
+    </section>
   </body>
 </html>

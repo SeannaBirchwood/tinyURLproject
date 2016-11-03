@@ -21,21 +21,41 @@
             </div>
 
             <ul class="nav navbar-nav">
-                <li><a href="/urls">Home</a></li>
-                <li><a href="/index">Index</a></li>
+
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
                 <li><a href="/new">Create</a></li>
                 <li><a href="/show">Modify</a></li>
             </ul>
 
             <hr />
-        <% if(!username) { %>
-            <p>Login<form method= "POST" action="/login"><input id="username" name="username" placeholder="Enter username"></input><button type="submit">Submit</button></form></p>
+
+        <% if(!user_id) { %>
+            <p>Login</p>
+            <form method= "POST" action="/login">
+            <input id="username" name="username" placeholder="Enter username"></input>
+            <input id="password" name="password" type="password"
+            placeholder="Enter password"></input>
+            <button type="submit">Submit</button>
+            </form>
         <% } %>
 
-        <% if(username) { %>
-            <p>Logout<form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
+        <% if(user_id) { %>
+        <%=user_id%>
+            <p><form method= "POST" action="/logout"><button type="submit">Logout</button></form></p>
 
             <% } %>
+
+        <% if(!user_id) { %>
+        <p>REGISTER</p>
+            <form method="POST" action="/register">
+            <input type="email" name="email" placeholder="Enter your email">
+            </input>
+            <input type="password" name="password" placeholder="Enter a password">
+            </input>
+            <button type="submit">Submit</button>
+            </form>
+        <% } %>
 
             <hr />
 

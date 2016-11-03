@@ -1,3 +1,4 @@
+
 "Use Strict"
 
 /********************************Page Setup**************************************/ 
@@ -7,22 +8,53 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookie = require("cookie-parser");
+const cookieSession = require('cookie-session');
+const bcrypt = require('bcrypt');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookie());
-app.set("view engine", "ejs");
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
 
-let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+app.set("view engine", "ejs");
 
 //this is just to make sure that the port is actually "listening".
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+/********************************************************************************/
+
+/*********************************Databases**************************************/
+
+let urlDatabase = {
+  "00000001": [{
+    shortURL: "b2xVn2",
+    longURL: "http://www.lighthouselabs.ca"
+  },
+  {
+    shortURL: "9sm5xK",
+    longURL: "http://www.google.com"
+  }]
+}
+
+let globalUsers = {
+
+  "00000001": 
+    {id: "00000001", 
+    email: "hark@hark.com", 
+    password: "hark"},
+
+  "user2RandomID": 
+    {id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"}
+}
+
+// const password = globalUsers.user_id['password'];
+// const hashed_password = bcrypt.hashSync(password, 10);
 
 /********************************************************************************/
 
@@ -38,75 +70,124 @@ app.listen(PORT, () => {
 /**********************************Get Requests**********************************/
 
 app.get('/', (req, res) => {
-  let urlsIndex = {
-    urls: urlDatabase,
-    username: req.cookies["username"]
-  };
-  res.render('urls_home', urlsIndex);
+  let userURLs = urlDatabase;
+  let userID = req.session['user_id'];
+  let templateVars = {userURLs: userURLs,
+                      user_id: userID}
+  res.render('urls_home', templateVars);
 });
 
 app.get('/urls', (req, res) => {
-  let urlsIndex = {
-    urls: urlDatabase,
-    username: req.cookies["username"]
-  };
-  res.render('urls_index', urlsIndex);
+  let userURLs = urlDatabase[req.session["user_id"]]
+  let userID = globalUsers[req.session["user_id"]];
+  let templateVars = {userURLs:userURLs,user_id:userID}
+  res.render('urls_index', templateVars);
 })
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = {
     shortURL: req.params.id,
-    username: req.cookies["username"]
+    user_id: req.session["user_id"]
   };
   res.render("urls_show", shortURL);
 });
 
 app.get("/new", (req, res) => {
-  let newShortUrl = {
-    username: req.cookies["username"]
+  let newUrl = {
+    urlDatabase: uid,
+    user_id: req.session["user_id"]
   };
-	res.render("urls_new", newShortUrl);
+  res.render("urls_new", newUrl);
 });
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = {
     shortURL: req.params.id,
-    username: req.cookies["username"]
+    user_id: req.session["user_id"]
   };
   res.redirect(longURL);
 });
+
+app.get("/register", (req, res) => {
+  let templateVars = {
+    shortURL: req.params.id,
+    user_id: req.session["user_id"]
+  };
+  console.log(templateVars, "Show me user object")
+  res.render("urls_register", templateVars)
+});
+
+app.get("/login", (req, res) => {
+  let templateVars = {
+    shortURL: req.params.id,
+    user_id: req.session["user_id"]
+  };
+  res.render("urls_login", templateVars);
+ });
 
 /*******************************************************************************/
 
 /***********************************Post Requests*******************************/
 
 app.post("/urls", (req, res) => {
-  urlDatabase[generateRandomString()] = req.body["longURL"];
-  res.redirect("/urls");
+  let url = {}
+  let userid = req.session['user_id']
+  url.shortURL = generateRandomString();
+  url.longURL = req.body['longURL'];
+  if (!urlDatabase[userid]){ //value
+     urlDatabase[userid] = [url] //value = something
+   } else {urlDatabase[userid].push(url);
+  //add something to value
+  }
+  console.log(urlDatabase, "This should be the url dict");
+  res.redirect("/");
+});
+
+app.post("/register", (req, res) => {
+  let user = {'id': uid};
+  user.email = req.body["email"];
+  user.password = bcrypt.hashSync(req.body["password"], 10);
+  globalUsers[uid] = user;
+  res.redirect("/");
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let templateVars = {shortURL: req.params.id};
+  let templateVars = {
+    shortURL: req.params.id,
+    user_id: req.session["user_id"]
+  };
   delete urlDatabase[templateVars.shortURL];
-  res.redirect("/urls");
+  res.redirect("/");
 });
 
 app.post('/urls/:id/update', (req, res) => {
   if(urlDatabase[req.params.id]) {
     urlDatabase[req.params.id] = req.body.longURL;
   }
-  res.redirect('/urls')
+  res.redirect('/')
 });
 
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/');
+  //Object.keys creates an array of all the values so we can
+  //forEach, which we pass a new name for the array (userID).
+ 
+  Object.keys(globalUsers).forEach( (userID) => {
+    let userValue = globalUsers[userID];
+    if(req.body.username === userValue.email && bcrypt.compareSync(req.body.password, userValue.password)) {
+      req.session.user_id = userValue.id;
+      res.redirect('/');
+    } else {
+      res.status(403).send("You need to check yourself")
+    }
+
+  });
+  
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  req.session = null;
   res.redirect('/');
-})
+});
 
 /******************************************************************************/
 
@@ -121,3 +202,16 @@ function generateRandomString() {
   }
   return text
 }
+
+function generateUserID() {
+  let text = "";
+  let possible = "0123456789";
+
+  for(let i = 0; i < 8; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text
+}
+
+let uid = generateUserID();
+let randomURL = generateRandomString();

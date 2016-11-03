@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <% "Use Strict" %>
 <html lang="en">
-	<head>
+
+  <head>
+    <title>Inputed URL</title>
 
     <!--This "Show" page is where a user can modify a URL
         that they have submitted. The endpoint is /urls/:id
         -->
 
-	</head>
+  </head>
 <body>
     <% include partials/_header %>
-	<h3>Change Your URL</h3>
-	<p>
-		Or <a href="/new">enter a different URL</a>
+  <h3>Change Your URL</h3>
+  <p>
+    Or <a href="/new">enter a different URL</a>
   </p>
   <hr />
   <div>
@@ -23,8 +25,8 @@
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px, height: 50px">
       <button type="submit">Update</button>
     </form>
-  	<br />
-  	<br />
+    <br />
+    <br />
   </div>
 </div>
 </body>
