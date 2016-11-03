@@ -13,34 +13,44 @@
 
   </head>
 
-    <body>
-        <% include partials/_header %>
-      <h2>Welcome to Tiny App!</h2>
-      <h4>(We're the home of the shortest URLs on the Interweb).</h4>
-      <hr />
-      <div>
-      <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
-      </div>
-      
-        <div> 
-        <% for(var url in userURLs) { %>
-        <li>
-        <a href="/urls/<%=url%>"><%=userURLs[url]%></a> -
-        <%=url%> <form action="/urls/:id/delete" method="POST" style="height: 50px">
+  <body>
+    <% include partials/_header %>
+    <h2>Welcome to Tiny App!</h2>
+    <h4>(We're the home of the shortest URLs on the Interweb).</h4>
+    <hr />
+    <div>
+    <p>Here is a sample of the URLs people just like YOU have shortened during our short time alive out here in bit-space. You can edit the URLs you submitted here.</p>
+    </div>
+    
+    <div> 
+      <% Object.keys(userURLs).forEach(function (elem) { %>
 
-        <%if(user_id) { %>
-            <button><a href="/urls/<%=url%>">Edit</a></button>
-            <button type="delete" style="width: 300px, height: 50px">Delete</button>
-            </form> 
-            <% } %> 
-          </li>
+        <% userURLs[elem].forEach(function (url) { %>
 
-            <% } %>
-        </div>
+          <% if(user_id) { %>
         
-        <section>
-          <p>Go <a href="/new">here</a> to make your own short URL!</p>
-        </section>
+          <li>
+            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            - <%=url['longURL'];%> 
+            
+              <form action="/urls/<%=url['shortURL']%>/delete" method="POST">
+                <button type="delete">Delete</button>
+              </form> 
+              <button><a href="/urls/<%=url['shortURL']%>">Edit</a></button>
+              </li>
+          <% } else { %>
+          <li>
+            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            - <%=url['longURL'];%> 
+          </li>
+        <% } %>
+      <% }); %> 
 
+      <% }); %>
+    </div>
+      
+    <section>
+      <p>Go <a href="/new">here</a> to make your own short URL!</p>
+    </section>
   </body>
 </html>
