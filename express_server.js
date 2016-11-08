@@ -89,6 +89,10 @@ app.get("/urls/:id", (req, res) => {
     shortURL: req.params.id,
     user_id: req.session["user_id"]
   };
+  // let userURLs = urlDatabase;
+  // let userID = req.session['user_id'];
+  // let templateVars = {userURLs: userURLs,
+  //                     user_id: userID}
   res.render("urls_show", shortURL);
 });
 
@@ -113,7 +117,6 @@ app.get("/register", (req, res) => {
     shortURL: req.params.id,
     user_id: req.session["user_id"]
   };
-  console.log(templateVars, "Show me user object")
   res.render("urls_register", templateVars)
 });
 
@@ -156,14 +159,24 @@ app.post("/urls/:id/delete", (req, res) => {
     shortURL: req.params.id,
     user_id: req.session["user_id"]
   };
-  delete urlDatabase[templateVars.shortURL];
+  delete urlDatabase[req.session["user_id"]];
   res.redirect("/");
 });
 
 app.post('/urls/:id/update', (req, res) => {
-  if(urlDatabase[req.params.id]) {
-    urlDatabase[req.params.id] = req.body.longURL;
+  let templateVars = {
+    shortURL: req.params.id,
+    user_id: req.session["user_id"]
   }
+  let user_id=req.session['user_id']
+  let userURLS = urlDatabase[user_id] 
+  let shortURL = req.params.id
+  userURLS.forEach( (urlObj) => {
+    if (shortURL === urlObj['shortURL']) {
+      urlObj['longURL'] = req.body.longURL
+    }
+  });
+  console.log(urlDatabase[req.session['user_id']])
   res.redirect('/')
 });
 

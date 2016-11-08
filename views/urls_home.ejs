@@ -27,14 +27,15 @@
 
         <% userURLs[elem].forEach(function (url) { %>
 
-          <% if(user_id) { %>
+          <% if(user_id === elem) { %>
         
           <li>
             <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
             - <%=url['longURL'];%> 
             
-              <form action="/urls/<%=url['shortURL']%>/delete" method="POST">
-                <button type="delete">Delete</button>
+              <form method="POST" action="/urls/<%=url['shortURL']%>/delete">
+              <label for='shortURL'></label>
+              <input value="Delete" type="submit" id="shortURL" name="shortURL"></form>
               </form> 
               <button><a href="/urls/<%=url['shortURL']%>">Edit</a></button>
               </li>
