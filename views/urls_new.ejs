@@ -13,6 +13,7 @@
     <% include partials/_header %>
 
     <% if(user_id) { %>
+    <p>No need to enter anything but www.example.com. We've taken care of all that http nonsense for you!</p>
     <form action="/urls" method="POST" style="margin:150px;">
       <label for="longURL">Enter a URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px, height: 50px">

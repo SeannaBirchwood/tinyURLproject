@@ -105,11 +105,18 @@ app.get("/new", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  };
-  res.redirect(longURL);
+  let userURLs = urlDatabase;
+  Object.keys(userURLs).forEach(urls => {
+    let userid = userURLs[urls]
+    userid.forEach(url => {
+      let shortURL = req.params.shortURL
+      let longURL = url['longURL']
+      if (shortURL === url['shortURL']) {
+      res.redirect(url['longURL']);
+      }
+    }); 
+  });
+  
 });
 
 app.get("/register", (req, res) => {
@@ -136,13 +143,12 @@ app.post("/urls", (req, res) => {
   let url = {}
   let userid = req.session['user_id']
   url.shortURL = generateRandomString();
-  url.longURL = req.body['longURL'];
+  url.longURL = `http://${req.body['longURL']}`;
   if (!urlDatabase[userid]){ //value
      urlDatabase[userid] = [url] //value = something
    } else {urlDatabase[userid].push(url);
   //add something to value
   }
-  console.log(urlDatabase, "This should be the url dict");
   res.redirect("/");
 });
 
@@ -164,13 +170,9 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post('/urls/:id/update', (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  }
-  let user_id=req.session['user_id']
-  let userURLS = urlDatabase[user_id] 
-  let shortURL = req.params.id
+  let user_id = req.session['user_id'];
+  let userURLS = urlDatabase[user_id];
+  let shortURL = req.params.id;
   userURLS.forEach( (urlObj) => {
     if (shortURL === urlObj['shortURL']) {
       urlObj['longURL'] = req.body.longURL

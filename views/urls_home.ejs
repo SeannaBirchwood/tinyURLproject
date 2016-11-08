@@ -30,7 +30,7 @@
           <% if(user_id === elem) { %>
         
           <li>
-            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            <a href="/u/<%=url['shortURL']%>"><%=url['shortURL']%></a>
             - <%=url['longURL'];%> 
             
               <form method="POST" action="/urls/<%=url['shortURL']%>/delete">
@@ -41,7 +41,7 @@
               </li>
           <% } else { %>
           <li>
-            <a href="http://<%=url['longURL']%>"><%=url['shortURL']%></a>
+            <a href="/u/<%=url['shortURL']%>"><%=url['shortURL']%></a>
             - <%=url['longURL'];%> 
           </li>
         <% } %>
