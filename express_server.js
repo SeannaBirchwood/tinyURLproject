@@ -28,33 +28,36 @@ app.listen(PORT, () => {
 /********************************************************************************/
 
 /*********************************Databases**************************************/
+// ***Below is what the data structure looks like***
 
-let urlDatabase = {
-  "00000001": [{
-    shortURL: "b2xVn2",
-    longURL: "http://www.lighthouselabs.ca"
-  },
-  {
-    shortURL: "9sm5xK",
-    longURL: "http://www.google.com"
-  }]
-}
+// let urlDatabase = {
+//   "00000001": [{
+//     shortURL: "b2xVn2",
+//     longURL: "http://www.lighthouselabs.ca"
+//   },
+//   {
+//     shortURL: "9sm5xK",
+//     longURL: "http://www.google.com"
+//   }]
+// }
 
-let globalUsers = {
+// let globalUsers = {
 
-  "00000001": 
-    {id: "00000001", 
-    email: "hark@hark.com", 
-    password: "hark"},
+//   "00000001": 
+//     {id: "00000001", 
+//     email: "hark@hark.com", 
+//     password: "hark"},
 
-  "user2RandomID": 
-    {id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"}
-}
+//   "user2RandomID": 
+//     {id: "user2RandomID", 
+//     email: "user2@example.com", 
+//     password: "dishwasher-funk"}
+// }
 
-// const password = globalUsers.user_id['password'];
-// const hashed_password = bcrypt.hashSync(password, 10);
+// ***These are the actual consts we're working with***
+
+const globalUsers = {}
+const urlDatabase = {}
 
 /********************************************************************************/
 
@@ -70,72 +73,47 @@ let globalUsers = {
 /**********************************Get Requests**********************************/
 
 app.get('/', (req, res) => {
-  console.log(req.session)
+  console.log(req.session, "req.session on homepage load")
   console.log('mom i am home',req.session['user_id'])
   let userid = req.session['user_id'];
-  let userURLs = urlDatabase[userid];
-  let database = urlDatabase
-  console.log(userURLs + " server userURLs")
-  let templateVars = {userURLs: userURLs,
-                      user_id: userid,
-                      database: database}
-  res.render('urls_home', templateVars);
+  console.log('in "/" globalUsers = ', globalUsers, ' urlDatabase = ', urlDatabase);
+  res.render('urls_home', {userURLs: urlDatabase[userid],user_id: userid, database: urlDatabase});
 });
-
-app.get('/urls', (req, res) => {
-  let userURLs = urlDatabase[req.session["user_id"]]
-  let userID = globalUsers[req.session["user_id"]];
-  let templateVars = {userURLs:userURLs,user_id:userID}
-  res.render('urls_index', templateVars);
-})
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  };
-  // let userURLs = urlDatabase;
-  // let userID = req.session['user_id'];
-  // let templateVars = {userURLs: userURLs,
-  //                     user_id: userID}
-  res.render("urls_show", shortURL);
-});
-
-app.get("/new", (req, res) => {
-  
-  res.render("urls_new",{user_id:req.session["user_id"]});
+  // does this route work the way it should? - sally 
+  // I think so, but I will test again - chelsea
+  console.log('in the curious /urls/:id route. req.params = ', req.params)
+  res.render("urls_show", {shortURL: req.params.id, user_id: req.session["user_id"]});
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let userURLs = urlDatabase;
-  Object.keys(userURLs).forEach(urls => {
-    let userid = userURLs[urls]
-    userid.forEach(url => {
-      let shortURL = req.params.shortURL
-      let longURL = url['longURL']
-      if (shortURL === url['shortURL']) {
-      res.redirect(url['longURL']);
+  Object.keys(urlDatabase).forEach(user_id => {
+    let userUrls = urlDatabase[user_id]
+    userUrls.forEach(url => {
+      if (req.params.shortURL === url.shortURL) {
+        res.redirect(url.longURL);
       }
     }); 
   });
   
 });
 
+app.get("/new", (req, res) => {
+  res.render("urls_new",{user_id:req.session["user_id"]});
+});
+
 app.get("/register", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  };
-  res.render("urls_register", templateVars)
+  res.render("urls_register", {user_id:req.session["user_id"]})
 });
 
 app.get("/login", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  };
-  res.render("urls_login", templateVars);
+  res.render("urls_login",{user_id:req.session["user_id"]});
  });
+
+app.get("/logout", (req, res) => {
+  res.render("urls_logout", {user_id:req.session["user_id"]})
+});
 
 /*******************************************************************************/
 
@@ -155,7 +133,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  var new_id = generateUserID();
+  let new_id = generateUserID();
   let user = {'id': new_id};
   user.email = req.body["email"];
   user.password = bcrypt.hashSync(req.body["password"], 10);
@@ -164,12 +142,16 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    user_id: req.session["user_id"]
-  };
-  delete urlDatabase[req.session["user_id"]];
-  res.redirect("/");
+  let shortURL = req.params.id
+  let currentUserUrls = urlDatabase[req.session["user_id"]];
+  currentUserUrls.forEach(url=>{
+    if (url.shortURL === shortURL ){
+      currentUserUrls.splice(currentUserUrls.indexOf(url),1);
+      res.redirect("/");
+    }
+  })
+  res.status(404).send("How are you supposed to delete something that isn't there, son?")
+  
 });
 
 app.post('/urls/:id/update', (req, res) => {
@@ -181,35 +163,31 @@ app.post('/urls/:id/update', (req, res) => {
       urlObj['longURL'] = req.body.longURL
     }
   });
-  console.log(urlDatabase[req.session['user_id']])
   res.redirect('/')
 });
 
 app.post("/login", (req, res) => {
+  req.session.user_id = 0;
   //Object.keys creates an array of all the values so we can
   //forEach, which we pass a new name for the array (userID).
- console.log('i am the username in the request',req.body.username);
   Object.keys(globalUsers).forEach( (userID) => {
     let userValue = globalUsers[userID];
-    console.log('i am a user value!',userValue)
-    if(req.body.username === userValue.email) {
-      //&& bcrypt.compareSync(req.body.password, userValue.password)
-      console.log('i matched!!!!',userValue.id)
+    if(req.body.username === userValue.email && bcrypt.compareSync(req.body.password, userValue.password)) {
       req.session.user_id = userValue.id;
-      console.log('set a cookie',req.session.user_id)
-      res.redirect('/');
-    } else {
-      res.status(403).send("You need to check yourself")
+      return req.session.user_id
     }
-
   });
-  
+  if(req.session.user_id > 0) {
+  res.redirect('/')
+} else {
+  res.status(403).send("You need to check yourself");
+}
 });
 
 app.post("/logout", (req, res) => {
-  req.session["user_id"] = null;
-  console.log('post delete WHAT IS IT ',req.session['user_id'])
-  res.redirect('/');
+  req.session = null;
+  console.log('post delete WHAT IS IT', req.session)
+  res.redirect('/logout');
 });
 
 /******************************************************************************/
@@ -235,6 +213,3 @@ function generateUserID() {
   }
   return text
 }
-
-
-let randomURL = generateRandomString();
