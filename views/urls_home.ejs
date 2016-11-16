@@ -23,12 +23,22 @@
     </div>
     
     <div> 
-      <% Object.keys(userURLs).forEach(function (elem) { %>
 
-        <% userURLs[elem].forEach(function (url) { %>
 
-          <% if(user_id === elem) { %>
-        
+<% userIDKeys = Object.keys(database) %>
+
+<% for(let i = 0; i < userIDKeys.length; i++) { %>
+<%console.log("This is a user id", userIDKeys[i])%>
+
+<%userOneKey = userIDKeys[i] %>
+
+<%if(user_id === userOneKey) { %>
+<%console.log("This is the current user id...", userOneKey) %>
+<%console.log("This is specific urls?", database[userOneKey]) %>
+
+<% database[userOneKey].forEach(function (url) { %>
+
+
           <li>
             <a href="/u/<%=url['shortURL']%>"><%=url['shortURL']%></a>
             - <%=url['longURL'];%> 
@@ -38,16 +48,12 @@
               <input value="Delete" type="submit" id="shortURL" name="shortURL"></form>
               </form> 
               <button><a href="/urls/<%=url['shortURL']%>">Edit</a></button>
-              </li>
-          <% } else { %>
-          <li>
-            <a href="/u/<%=url['shortURL']%>"><%=url['shortURL']%></a>
-            - <%=url['longURL'];%> 
-          </li>
-        <% } %>
-      <% }); %> 
+              </li>         
 
-      <% }); %>
+      <% }); %> 
+              <% } %>
+              <% } %> 
+                
     </div>
       
     <section>

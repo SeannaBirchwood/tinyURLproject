@@ -70,10 +70,15 @@ let globalUsers = {
 /**********************************Get Requests**********************************/
 
 app.get('/', (req, res) => {
-  let userURLs = urlDatabase;
-  let userID = req.session['user_id'];
+  console.log(req.session)
+  console.log('mom i am home',req.session['user_id'])
+  let userid = req.session['user_id'];
+  let userURLs = urlDatabase[userid];
+  let database = urlDatabase
+  console.log(userURLs + " server userURLs")
   let templateVars = {userURLs: userURLs,
-                      user_id: userID}
+                      user_id: userid,
+                      database: database}
   res.render('urls_home', templateVars);
 });
 
@@ -97,11 +102,8 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/new", (req, res) => {
-  let newUrl = {
-    urlDatabase: uid,
-    user_id: req.session["user_id"]
-  };
-  res.render("urls_new", newUrl);
+  
+  res.render("urls_new",{user_id:req.session["user_id"]});
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -153,10 +155,11 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let user = {'id': uid};
+  var new_id = generateUserID();
+  let user = {'id': new_id};
   user.email = req.body["email"];
   user.password = bcrypt.hashSync(req.body["password"], 10);
-  globalUsers[uid] = user;
+  globalUsers[new_id] = user;
   res.redirect("/");
 });
 
@@ -185,11 +188,15 @@ app.post('/urls/:id/update', (req, res) => {
 app.post("/login", (req, res) => {
   //Object.keys creates an array of all the values so we can
   //forEach, which we pass a new name for the array (userID).
- 
+ console.log('i am the username in the request',req.body.username);
   Object.keys(globalUsers).forEach( (userID) => {
     let userValue = globalUsers[userID];
-    if(req.body.username === userValue.email && bcrypt.compareSync(req.body.password, userValue.password)) {
+    console.log('i am a user value!',userValue)
+    if(req.body.username === userValue.email) {
+      //&& bcrypt.compareSync(req.body.password, userValue.password)
+      console.log('i matched!!!!',userValue.id)
       req.session.user_id = userValue.id;
+      console.log('set a cookie',req.session.user_id)
       res.redirect('/');
     } else {
       res.status(403).send("You need to check yourself")
@@ -200,7 +207,8 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  req.session = null;
+  req.session["user_id"] = null;
+  console.log('post delete WHAT IS IT ',req.session['user_id'])
   res.redirect('/');
 });
 
@@ -228,5 +236,5 @@ function generateUserID() {
   return text
 }
 
-let uid = generateUserID();
+
 let randomURL = generateRandomString();
